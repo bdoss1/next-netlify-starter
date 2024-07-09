@@ -8,8 +8,8 @@ const PaymentForm = () => {
   const [adjustedTotal, setAdjustedTotal] = useState(total);
 
   const { dispatchData } = useAcceptJs({
-    apiLoginID: '4w94cd8LEb', // Replace with your API login ID
-    clientKey: '63P397P7JyHqdUr9', // Replace with your client key
+    apiLoginID: 'YOUR_API_LOGIN_ID', // Replace with your API login ID
+    clientKey: 'YOUR_CLIENT_KEY', // Replace with your client key
   });
 
   const handlePaymentMethodChange = (e) => {
@@ -64,89 +64,206 @@ const PaymentForm = () => {
   return (
     <>
       <Script src="https://js.authorize.net/v1/Accept.js" strategy="beforeInteractive" />
-      <form onSubmit={handleSubmit}>
-        <h2>Payment Form</h2>
-        
-        <label>
-          First Name:
-          <input type="text" name="firstName" required />
-        </label>
-        
-        <label>
-          Last Name:
-          <input type="text" name="lastName" required />
-        </label>
-        
-        <label>
-          Company:
-          <input type="text" name="company" />
-        </label>
-        
-        <label>
-          Invoice #:
-          <input type="text" name="invoice" />
-        </label>
-        
-        <label>
-          Amount:
-          <input type="number" name="amount" required onChange={handleAmountChange} />
-        </label>
-        
-        <label>
-          Billing Address:
-          <input type="text" name="billingAddress" required />
-        </label>
+      <div style={styles.container}>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <h2 style={styles.heading}>Payment Form</h2>
 
-        <label>
-          Payment Method:
-          <select value={paymentMethod} onChange={handlePaymentMethodChange}>
-            <option value="ACH">ACH</option>
-            <option value="CreditCard">Credit Card</option>
-          </select>
-        </label>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              First Name:
+              <input type="text" name="firstName" required style={styles.input} />
+            </label>
 
-        {paymentMethod === 'ACH' && (
-          <div>
-            <h3>Bank Information</h3>
-            <label>
-              Bank Name:
-              <input type="text" name="bankName" />
-            </label>
-            <label>
-              Account Number:
-              <input type="text" name="accountNumber" />
-            </label>
-            <label>
-              Routing Number:
-              <input type="text" name="routingNumber" />
+            <label style={styles.label}>
+              Last Name:
+              <input type="text" name="lastName" required style={styles.input} />
             </label>
           </div>
-        )}
 
-        {paymentMethod === 'CreditCard' && (
-          <div>
-            <h3>Credit Card Information</h3>
-            <label>
-              Card Number:
-              <input type="text" name="cardNumber" />
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              Company:
+              <input type="text" name="company" style={styles.input} />
             </label>
-            <label>
-              Expiry Date:
-              <input type="text" name="expiryDate" placeholder="MM/YYYY" />
+
+            <label style={styles.label}>
+              Invoice #:
+              <input type="text" name="invoice" style={styles.input} />
             </label>
-            <label>
-              CVV:
-              <input type="text" name="cvv" />
-            </label>
-            <p>Note: A 3% credit card fee is added to the total.</p>
           </div>
-        )}
 
-        <h3>Total: ${adjustedTotal.toFixed(2)}</h3>
-        <button type="submit">Submit Payment</button>
-      </form>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              Amount:
+              <input type="number" name="amount" required onChange={handleAmountChange} style={styles.input} />
+            </label>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              Billing Address:
+              <input type="text" name="billingAddress" required style={styles.input} />
+            </label>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              City:
+              <input type="text" name="city" required style={styles.input} />
+            </label>
+
+            <label style={styles.label}>
+              State:
+              <input type="text" name="state" required style={styles.input} />
+            </label>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              Zip:
+              <input type="text" name="zip" required style={styles.input} />
+            </label>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
+              Payment Method:
+              <select value={paymentMethod} onChange={handlePaymentMethodChange} style={styles.select}>
+                <option value="ACH">ACH</option>
+                <option value="CreditCard">Credit Card</option>
+              </select>
+            </label>
+          </div>
+
+          {paymentMethod === 'ACH' && (
+            <div>
+              <h3 style={styles.subheading}>Bank Information</h3>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  Bank Name:
+                  <input type="text" name="bankName" style={styles.input} />
+                </label>
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  Account Number:
+                  <input type="text" name="accountNumber" style={styles.input} />
+                </label>
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  Routing Number:
+                  <input type="text" name="routingNumber" style={styles.input} />
+                </label>
+              </div>
+            </div>
+          )}
+
+          {paymentMethod === 'CreditCard' && (
+            <div>
+              <h3 style={styles.subheading}>Credit Card Information</h3>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  Card Number:
+                  <input type="text" name="cardNumber" style={styles.input} />
+                </label>
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  Expiry Date:
+                  <input type="text" name="expiryDate" placeholder="MM/YYYY" style={styles.input} />
+                </label>
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  CVV:
+                  <input type="text" name="cvv" style={styles.input} />
+                </label>
+              </div>
+              <p style={styles.note}>Note: A 3% credit card fee is added to the total.</p>
+            </div>
+          )}
+
+          <h3 style={styles.total}>Total: ${adjustedTotal.toFixed(2)}</h3>
+          <button type="submit" style={styles.button}>Submit Payment</button>
+        </form>
+      </div>
     </>
   );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#f9f9f9',
+  },
+  form: {
+    backgroundColor: '#fff',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    maxWidth: '600px',
+    width: '100%',
+  },
+  heading: {
+    textAlign: 'center',
+    marginBottom: '20px',
+  },
+  inputGroup: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '15px',
+  },
+  label: {
+    flex: '1 1 45%',
+    display: 'flex',
+    flexDirection: 'column',
+    marginRight: '10px',
+  },
+  input: {
+    padding: '10px',
+    fontSize: '16px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    marginTop: '5px',
+  },
+  select: {
+    padding: '10px',
+    fontSize: '16px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+    marginTop: '5px',
+  },
+  subheading: {
+    marginTop: '20px',
+    marginBottom: '10px',
+    fontSize: '18px',
+  },
+  note: {
+    color: 'red',
+    fontSize: '14px',
+    marginTop: '10px',
+  },
+  total: {
+    textAlign: 'center',
+    marginTop: '20px',
+    fontSize: '18px',
+  },
+  button: {
+    display: 'block',
+    width: '100%',
+    padding: '10px',
+    fontSize: '16px',
+    color: '#fff',
+    backgroundColor: '#007BFF',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    marginTop: '20px',
+  },
 };
 
 export default PaymentForm;
