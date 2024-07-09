@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Script from 'next/script';
-import { AcceptJsProvider, useAcceptJs } from 'react-acceptjs';
+import { useAcceptJs } from 'react-acceptjs';
 
 const PaymentForm = () => {
   const [paymentMethod, setPaymentMethod] = useState('ACH');
@@ -149,10 +149,4 @@ const PaymentForm = () => {
   );
 };
 
-const App = () => (
-  <AcceptJsProvider apiLoginID="4w94cd8LEb" clientKey="63P397P7JyHqdUr9">
-    <PaymentForm />
-  </AcceptJsProvider>
-);
-
-export default App;
+export default PaymentForm;
