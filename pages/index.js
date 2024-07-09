@@ -86,13 +86,15 @@ const PaymentForm = () => {
               <input type="text" name="company" style={styles.input} />
             </label>
 
-            <label style={styles.label}>
-              Invoice #:
-              <input type="text" name="invoice" style={styles.input} />
-            </label>
+            
           </div>
 
           <div style={styles.inputGroup}>
+          <label style={styles.label}>
+              Invoice #:
+              <input type="text" name="invoice" style={styles.input} />
+            </label>
+            
             <label style={styles.label}>
               Amount:
               <input type="number" name="amount" required onChange={handleAmountChange} style={styles.input} />
