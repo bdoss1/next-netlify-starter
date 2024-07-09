@@ -150,7 +150,7 @@ const PaymentForm = () => {
 };
 
 const App = () => (
-  <AcceptJsProvider apiLoginID="YOUR_API_LOGIN_ID" clientKey="YOUR_CLIENT_KEY">
+  <AcceptJsProvider apiLoginID="4w94cd8LEb" clientKey="63P397P7JyHqdUr9">
     <PaymentForm />
   </AcceptJsProvider>
 );
