@@ -6,6 +6,7 @@ const PaymentForm = () => {
   const [paymentMethod, setPaymentMethod] = useState('ACH');
   const [total, setTotal] = useState(0);
   const [adjustedTotal, setAdjustedTotal] = useState(total);
+  const [error, setError] = useState('');
 
   const { dispatchData } = useAcceptJs({
     apiLoginID: '4w94cd8LEb', // Replace with your API login ID
@@ -34,6 +35,7 @@ const PaymentForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (paymentMethod === 'CreditCard') {
       const cardData = {
@@ -43,6 +45,8 @@ const PaymentForm = () => {
         cvv: document.getElementsByName('cvv')[0].value,
       };
 
+      console.log('Card Data:', cardData); // Debugging log
+
       try {
         const response = await dispatchData(cardData);
         if (response.messages.resultCode === 'Ok') {
@@ -51,9 +55,11 @@ const PaymentForm = () => {
         } else {
           // Handle payment error
           console.error('Payment Error:', response.messages.message[0].text);
+          setError(response.messages.message[0].text);
         }
       } catch (error) {
         console.error('Error dispatching data:', error);
+        setError('An error occurred while processing the payment. Please try again.');
       }
     } else if (paymentMethod === 'ACH') {
       // Handle ACH payment
@@ -86,15 +92,13 @@ const PaymentForm = () => {
               <input type="text" name="company" style={styles.input} />
             </label>
 
-            
-          </div>
-
-          <div style={styles.inputGroup}>
-          <label style={styles.label}>
+            <label style={styles.label}>
               Invoice #:
               <input type="text" name="invoice" style={styles.input} />
             </label>
-            
+          </div>
+
+          <div style={styles.inputGroup}>
             <label style={styles.label}>
               Amount:
               <input type="number" name="amount" required onChange={handleAmountChange} style={styles.input} />
@@ -186,6 +190,8 @@ const PaymentForm = () => {
             </div>
           )}
 
+          {error && <p style={styles.error}>{error}</p>}
+
           <h3 style={styles.total}>Total: ${adjustedTotal.toFixed(2)}</h3>
           <button type="submit" style={styles.button}>Submit Payment</button>
         </form>
@@ -248,6 +254,12 @@ const styles = {
     color: 'red',
     fontSize: '14px',
     marginTop: '10px',
+  },
+  error: {
+    color: 'red',
+    fontSize: '14px',
+    marginTop: '10px',
+    textAlign: 'center',
   },
   total: {
     textAlign: 'center',
