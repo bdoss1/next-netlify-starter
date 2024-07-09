@@ -8,8 +8,8 @@ const PaymentForm = () => {
   const [adjustedTotal, setAdjustedTotal] = useState(total);
 
   const { dispatchData } = useAcceptJs({
-    apiLoginID: 'YOUR_API_LOGIN_ID', // Replace with your API login ID
-    clientKey: 'YOUR_CLIENT_KEY', // Replace with your client key
+    apiLoginID: '4w94cd8LEb', // Replace with your API login ID
+    clientKey: '63P397P7JyHqdUr9', // Replace with your client key
   });
 
   const handlePaymentMethodChange = (e) => {
