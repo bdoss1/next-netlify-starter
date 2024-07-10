@@ -38,11 +38,21 @@ const PaymentForm = () => {
     setError('');
 
     if (paymentMethod === 'CreditCard') {
+      const cardNumber = document.getElementsByName('cardNumber')[0].value;
+      const month = document.getElementsByName('month')[0].value;
+      const year = document.getElementsByName('year')[0].value;
+      const cvv = document.getElementsByName('cvv')[0].value;
+
+      if (!cardNumber || !month || !year || !cvv) {
+        setError('All credit card fields are required.');
+        return;
+      }
+
       const cardData = {
-        cardNumber: document.getElementsByName('cardNumber')[0].value,
-        month: document.getElementsByName('expiryDate')[0].value.split('/')[0],
-        year: document.getElementsByName('expiryDate')[0].value.split('/')[1],
-        cvv: document.getElementsByName('cvv')[0].value,
+        cardNumber: cardNumber,
+        month: month,
+        year: year,
+        cvv: cvv,
       };
 
       console.log('Card Data:', cardData); // Debugging log
@@ -151,10 +161,20 @@ const PaymentForm = () => {
           {paymentMethod === 'ACH' && (
             <div>
               <h3 style={styles.subheading}>Bank Information</h3>
+             
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Bank Name:
                   <input type="text" name="bankName" style={styles.input} />
+                </label>
+              </div>
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>
+                  Account Type:
+                  <select name="accountType" required style={styles.select}>
+                    <option value="checking">Checking</option>
+                    <option value="savings">Savings</option>
+                  </select>
                 </label>
               </div>
               <div style={styles.inputGroup}>
@@ -183,8 +203,12 @@ const PaymentForm = () => {
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
-                  Expiry Date:
-                  <input type="text" name="expiryDate" placeholder="MM/YYYY" style={styles.input} />
+                  Expiry Month:
+                  <input type="text" name="month" placeholder="MM" style={styles.input} />
+                </label>
+                <label style={styles.label}>
+                  Expiry Year:
+                  <input type="text" name="year" placeholder="YYYY" style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
@@ -288,3 +312,5 @@ const styles = {
 };
 
 export default PaymentForm;
+
+  
