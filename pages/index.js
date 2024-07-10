@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Script from 'next/script';
 import { useAcceptJs } from 'react-acceptjs';
@@ -10,8 +9,8 @@ const PaymentForm = () => {
   const [error, setError] = useState('');
 
   const { dispatchData } = useAcceptJs({
-    apiLoginID: '4w94cd8LEb',
-    clientKey: '63P397P7JyHqdUr9', 
+    apiLoginID: '4w94cd8LEb', // Replace with your API login ID
+    clientKey: '63P397P7JyHqdUr9', // Replace with your client key
   });
 
   const handlePaymentMethodChange = (e) => {
@@ -89,19 +88,24 @@ const PaymentForm = () => {
 
           <div style={styles.inputGroup}>
             <label style={styles.label}>
-              Company:
-              <input type="text" name="company" style={styles.input} />
+              Email:
+              <input type="email" name="email" required style={styles.input} />
             </label>
-
-           
           </div>
 
           <div style={styles.inputGroup}>
-          <label style={styles.label}>
+            <label style={styles.label}>
+              Company:
+              <input type="text" name="company" style={styles.input} />
+            </label>
+          </div>
+
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>
               Invoice #:
               <input type="text" name="invoice" style={styles.input} />
             </label>
-            
+
             <label style={styles.label}>
               Amount:
               <input type="number" name="amount" required onChange={handleAmountChange} style={styles.input} />
