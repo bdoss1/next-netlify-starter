@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Script from 'next/script';
 import { useAcceptJs } from 'react-acceptjs';
@@ -9,8 +10,8 @@ const PaymentForm = () => {
   const [error, setError] = useState('');
 
   const { dispatchData } = useAcceptJs({
-    apiLoginID: '4w94cd8LEb', // Replace with your API login ID
-    clientKey: '63P397P7JyHqdUr9', // Replace with your client key
+    apiLoginID: '4w94cd8LEb',
+    clientKey: '63P397P7JyHqdUr9', 
   });
 
   const handlePaymentMethodChange = (e) => {
