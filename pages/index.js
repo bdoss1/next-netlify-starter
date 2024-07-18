@@ -43,21 +43,19 @@ const PaymentForm = () => {
     const email = document.getElementsByName('email')[0].value;
 
     if (paymentMethod === 'CreditCard') {
-      const cardNumber = document.getElementsByName('cardNumber')[0].value;
-      const month = document.getElementsByName('month')[0].value;
-      const year = document.getElementsByName('year')[0].value;
-      const cvv = document.getElementsByName('cvv')[0].value;
+      const CardNumber = document.getElementsByName('CardNumber')[0].value;
+      const ExpirationDate = document.getElementsByName('ExpirationDate')[0].value;
+      const CardCode = document.getElementsByName('CardCode')[0].value;
 
-      if (!cardNumber || !month || !year || !cvv) {
+      if (!CardNumber || !ExpirationDate || !CardCode) {
         setError('All credit card fields are required.');
         return;
       }
 
       const cardData = {
-        cardNumber: cardNumber,
-        month: month,
-        year: year,
-        cvv: cvv,
+        CardNumber: CardNumber,
+        ExpirationDate: ExpirationDate,
+        CardCode: CardCode,
       };
 
       console.log('Card Data:', cardData); // Debugging log
@@ -248,23 +246,20 @@ const PaymentForm = () => {
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Card Number:
-                  <input type="text" name="cardNumber" style={styles.input} />
+                  <input type="text" name="CardNumber" style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Expiry Month:
-                  <input type="text" name="month" placeholder="MM" style={styles.input} />
+                  <input type="text" name="ExpirationDate" placeholder="MM/YY" style={styles.input} />
                 </label>
-                <label style={styles.label}>
-                  Expiry Year:
-                  <input type="text" name="year" placeholder="YYYY" style={styles.input} />
-                </label>
+                
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   CVV:
-                  <input type="text" name="cvv" style={styles.input} />
+                  <input type="text" name="CardCode" style={styles.input} />
                 </label>
               </div>
               <p style={styles.note}>Note: A 3% credit card fee is added to the total.</p>
