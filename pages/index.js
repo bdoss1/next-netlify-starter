@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import Script from 'next/script';
 import { useAcceptJs } from 'react-acceptjs';
+import emailjs from 'emailjs-com';
+import { useRouter } from 'next/router';
 
 const PaymentForm = () => {
   const [paymentMethod, setPaymentMethod] = useState('ACH');
   const [total, setTotal] = useState(0);
   const [adjustedTotal, setAdjustedTotal] = useState(total);
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const { dispatchData } = useAcceptJs({
     apiLoginID: '4w94cd8LEb', // Replace with your API login ID
@@ -37,6 +40,8 @@ const PaymentForm = () => {
     e.preventDefault();
     setError('');
 
+    const email = document.getElementsByName('email')[0].value;
+
     if (paymentMethod === 'CreditCard') {
       const cardNumber = document.getElementsByName('cardNumber')[0].value;
       const month = document.getElementsByName('month')[0].value;
@@ -62,6 +67,8 @@ const PaymentForm = () => {
         if (response.messages.resultCode === 'Ok') {
           // Handle successful payment
           console.log('Payment Successful:', response);
+          await sendEmails(email);
+          router.push('/confirmation');
         } else {
           // Handle payment error
           console.error('Payment Error:', response.messages.message[0].text);
@@ -74,6 +81,49 @@ const PaymentForm = () => {
     } else if (paymentMethod === 'ACH') {
       // Handle ACH payment
       console.log('Processing ACH payment');
+      await sendEmails(email);
+      router.push('/confirmation');
+    }
+  };
+
+  const sendEmails = async (email) => {
+    const customerTemplateParams = {
+      to_email: email,
+      subject: 'Payment Confirmation',
+      message: `
+        Dear Customer,
+
+        Thank you for submitting your payment. We have successfully received your payment of $${adjustedTotal.toFixed(2)}.
+
+        If you have any questions or need further assistance, please feel free to contact us.
+
+        Best regards,
+        Your Company Name
+      `,
+    };
+
+    const adminTemplateParams = {
+      to_email: 'bdoss@varispark.com',
+      subject: 'New Payment Submitted',
+      message: `
+        A new payment has been submitted.
+
+        Details:
+        - Amount: $${adjustedTotal.toFixed(2)}
+        - Email: ${email}
+
+        Please check the payment details in the admin dashboard.
+
+        Best regards,
+        Your Company Name
+      `,
+    };
+
+    try {
+      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', customerTemplateParams, 'YOUR_USER_ID');
+      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', adminTemplateParams, 'YOUR_USER_ID');
+    } catch (error) {
+      console.error('Error sending email:', error);
     }
   };
 
@@ -312,5 +362,3 @@ const styles = {
 };
 
 export default PaymentForm;
-
-  
