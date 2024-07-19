@@ -5,7 +5,7 @@ import emailjs from 'emailjs-com';
 import { useRouter } from 'next/router';
 
 const PaymentForm = () => {
-  const [paymentMethod, setPaymentMethod] = useState('ACH');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [total, setTotal] = useState(0);
   const [adjustedTotal, setAdjustedTotal] = useState(total);
   const [error, setError] = useState('');
@@ -50,8 +50,7 @@ const PaymentForm = () => {
       const zip = document.getElementsByName('zip')[0].value;
       const fullName = document.getElementsByName('fullName')[0].value;
 
-
-      if (!cardNumber || !month || !year || !cardCode || !zip ) {
+      if (!cardNumber || !month || !year || !cardCode || !zip || !fullName) {
         setError('All credit card fields are required.');
         return;
       }
@@ -62,19 +61,10 @@ const PaymentForm = () => {
         year: year,
         cardCode: cardCode,
         zip: zip,
-        fullname, fullname,
+        fullName: fullName,
       };
 
-      var cardData2 = {};
-        cardData.cardNumber = document.getElementById("cardNumber").value;
-        cardData.month = document.getElementById("month").value;
-        cardData.year = document.getElementById("year").value;
-        cardData.cardCode = document.getElementById("cardCode").value;
-        cardData.zip = document.getElementById("zip").value;
-        
-
-
-      console.log('Card Data:', cardData2); // Debugging log
+      console.log('Card Data:', cardData); // Debugging log
 
       try {
         const response = await dispatchData(cardData);
@@ -93,6 +83,16 @@ const PaymentForm = () => {
         setError('An error occurred while processing the payment. Please try again.');
       }
     } else if (paymentMethod === 'ACH') {
+      const bankName = document.getElementsByName('bankName')[0].value;
+      const accountType = document.getElementsByName('accountType')[0].value;
+      const accountNumber = document.getElementsByName('accountNumber')[0].value;
+      const routingNumber = document.getElementsByName('routingNumber')[0].value;
+
+      if (!bankName || !accountType || !accountNumber || !routingNumber || !email) {
+        setError('All ACH fields and email are required.');
+        return;
+      }
+
       // Handle ACH payment
       console.log('Processing ACH payment');
       await sendEmails(email);
@@ -151,10 +151,8 @@ const PaymentForm = () => {
           <div style={styles.inputGroup}>
             <label style={styles.label}>
               Full Name:
-              <input type="text" name="fullName" required style={styles.input} />
+              <input type="text" id="fullName" name="fullName" required style={styles.input} />
             </label>
-
-           
           </div>
 
           <div style={styles.inputGroup}>
@@ -205,7 +203,7 @@ const PaymentForm = () => {
           <div style={styles.inputGroup}>
             <label style={styles.label}>
               Zip:
-              <input type="text" name="zip" required style={styles.input} />
+              <input type="text" id="zip" name="zip" required style={styles.input} />
             </label>
           </div>
 
@@ -213,6 +211,7 @@ const PaymentForm = () => {
             <label style={styles.label}>
               Payment Method:
               <select value={paymentMethod} onChange={handlePaymentMethodChange} style={styles.select}>
+                <option value="">Select Payment Method</option>
                 <option value="ACH">ACH</option>
                 <option value="CreditCard">Credit Card</option>
               </select>
@@ -222,11 +221,11 @@ const PaymentForm = () => {
           {paymentMethod === 'ACH' && (
             <div>
               <h3 style={styles.subheading}>Bank Information</h3>
-             
+
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Bank Name:
-                  <input type="text" name="bankName" style={styles.input} />
+                  <input type="text" name="bankName" required style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
@@ -241,13 +240,13 @@ const PaymentForm = () => {
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Account Number:
-                  <input type="text" name="accountNumber" style={styles.input} />
+                  <input type="text" name="accountNumber" required style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Routing Number:
-                  <input type="text" name="routingNumber" style={styles.input} />
+                  <input type="text" name="routingNumber" required style={styles.input} />
                 </label>
               </div>
             </div>
@@ -259,24 +258,23 @@ const PaymentForm = () => {
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Card Number:
-                  <input type="text" id="cardNumber" name="cardNumber" style={styles.input} />
+                  <input type="text" id="cardNumber" name="cardNumber" required style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Expiration Month:
-                  <input type="text" name="month" placeholder="MM" style={styles.input} />
+                  <input type="text" id="month" name="month" placeholder="MM" required style={styles.input} />
                 </label>
                 <label style={styles.label}>
                   Expiration Year:
-                  <input type="text" name="year" placeholder="YY" style={styles.input} />
+                  <input type="text" id="year" name="year" placeholder="YY" required style={styles.input} />
                 </label>
-                
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   CVV:
-                  <input type="text" name="cardCode" style={styles.input} />
+                  <input type="text" id="cardCode" name="cardCode" required style={styles.input} />
                 </label>
               </div>
               <p style={styles.note}>Note: A 3% credit card fee is added to the total.</p>
