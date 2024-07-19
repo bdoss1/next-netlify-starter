@@ -1,6 +1,6 @@
 // pages/api/process-payment.js
 import { APIContracts, APIControllers } from 'authorizenet';
-import constants from '../../utils/constants'; // Ensure you have your constants set up correctly
+import constants from '../../utils/constants'; // Adjust the path if necessary
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -27,6 +27,7 @@ export default async function handler(req, res) {
     billTo.setState(state);
     billTo.setZip(zip);
     billTo.setCountry('USA');
+    billTo.setEmail(email);
 
     let paymentType;
     if (paymentMethod === 'CreditCard') {
