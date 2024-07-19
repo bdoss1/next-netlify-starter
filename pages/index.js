@@ -131,8 +131,8 @@ const PaymentForm = () => {
     };
 
     try {
-      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', customerTemplateParams, 'YOUR_USER_ID');
-      await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', adminTemplateParams, 'YOUR_USER_ID');
+      await emailjs.send('service_payment_form', 'template_m1nc78t', customerTemplateParams, 'i9o7d9HF19gjgmtlW');
+      await emailjs.send('service_payment_form', 'template_tkaffat', adminTemplateParams, 'i9o7d9HF19gjgmtlW');
     } catch (error) {
       console.error('Error sending email:', error);
     }
