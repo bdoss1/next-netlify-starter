@@ -4,9 +4,8 @@ import { useAcceptJs } from 'react-acceptjs';
 import emailjs from 'emailjs-com';
 import { useRouter } from 'next/router';
 
-
 const PaymentForm = () => {
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('ACH');
   const [total, setTotal] = useState(0);
   const [adjustedTotal, setAdjustedTotal] = useState(total);
   const [error, setError] = useState('');
@@ -41,26 +40,38 @@ const PaymentForm = () => {
     e.preventDefault();
     setError('');
 
+    const firstName = document.getElementsByName('firstName')[0].value;
+    const lastName = document.getElementsByName('lastName')[0].value;
     const email = document.getElementsByName('email')[0].value;
+    const billingAddress = document.getElementsByName('billingAddress')[0].value;
+    const city = document.getElementsByName('city')[0].value;
+    const state = document.getElementsByName('state')[0].value;
+    const zip = document.getElementsByName('zip')[0].value;
 
     if (paymentMethod === 'CreditCard') {
       const cardNumber = document.getElementsByName('cardNumber')[0].value;
-      const ExpirationDate = document.getElementsByName('ExpirationDate')[0].value;
+      const month = document.getElementsByName('month')[0].value;
+      const year = document.getElementsByName('year')[0].value;
       const cardCode = document.getElementsByName('cardCode')[0].value;
-      const zip = document.getElementsByName('zip')[0].value;
-      const fullName = document.getElementsByName('fullName')[0].value;
 
-      if (!cardNumber || !ExpirationDate || !cardCode || !zip || !fullName) {
-        setError('All credit card fields are required.');
+      if (!cardNumber || !month || !year || !cardCode || !zip || !firstName || !lastName || !billingAddress || !city || !state) {
+        setError('All credit card fields and billing information are required.');
         return;
       }
 
+      const expirationDate = `${month}${year}`;
+
       const cardData = {
         cardNumber: cardNumber,
-        ExpirationDate: ExpirationDate,
+        expirationDate: expirationDate,
         cardCode: cardCode,
         zip: zip,
-        fullName: fullName,
+        billingAddress: billingAddress,
+        city: city,
+        state: state,
+        firstName: firstName,
+        lastName: lastName,
+        amount: adjustedTotal,
       };
 
       console.log('Card Data:', cardData); // Debugging log
@@ -149,8 +160,12 @@ const PaymentForm = () => {
 
           <div style={styles.inputGroup}>
             <label style={styles.label}>
-              Full Name:
-              <input type="text" id="fullName" name="fullName" required style={styles.input} />
+              First Name:
+              <input type="text" id="firstName" name="firstName" required style={styles.input} />
+            </label>
+            <label style={styles.label}>
+              Last Name:
+              <input type="text" id="lastName" name="lastName" required style={styles.input} />
             </label>
           </div>
 
@@ -261,10 +276,13 @@ const PaymentForm = () => {
                 </label>
               </div>
               <div style={styles.inputGroup}>
-                
                 <label style={styles.label}>
-                  Expiration Date:
-                  <input type="text" id="ExpirationDate" name="ExpirationDate" placeholder="MM/YY" required style={styles.input} />
+                  Expiration Month:
+                  <input type="text" id="month" name="month" placeholder="MM" required style={styles.input} />
+                </label>
+                <label style={styles.label}>
+                  Expiration Year:
+                  <input type="text" id="year" name="year" placeholder="YY" required style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
