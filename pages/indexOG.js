@@ -1,21 +1,26 @@
-// pages/index.js
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import Script from 'next/script';
+import { useAcceptJs } from 'react-acceptjs';
 import emailjs from 'emailjs-com';
+import { useRouter } from 'next/router';
 
 const PaymentForm = () => {
-  const [paymentMethod, setPaymentMethod] = useState('CreditCard');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [total, setTotal] = useState(0);
   const [adjustedTotal, setAdjustedTotal] = useState(total);
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const { dispatchData } = useAcceptJs({
+    apiLoginID: '4w94cd8LEb', // Replace with your API login ID
+    clientKey: '63P397P7JyHqdUr9', // Replace with your client key
+  });
+
   const handlePaymentMethodChange = (e) => {
     const method = e.target.value;
     setPaymentMethod(method);
     if (method === 'CreditCard') {
-      setAdjustedTotal(total * 1.03); // Adding 3% fee for credit card payments
+      setAdjustedTotal(total * 1.03); // Adding 3% fee
     } else {
       setAdjustedTotal(total);
     }
@@ -25,7 +30,7 @@ const PaymentForm = () => {
     const amount = parseFloat(e.target.value);
     setTotal(amount);
     if (paymentMethod === 'CreditCard') {
-      setAdjustedTotal(amount * 1.03); // Adding 3% fee for credit card payments
+      setAdjustedTotal(amount * 1.03); // Adding 3% fee
     } else {
       setAdjustedTotal(amount);
     }
@@ -35,65 +40,73 @@ const PaymentForm = () => {
     e.preventDefault();
     setError('');
 
-    const paymentData = {
-      firstName: document.getElementsByName('firstName')[0].value,
-      lastName: document.getElementsByName('lastName')[0].value,
-      email: document.getElementsByName('email')[0].value,
-      company: document.getElementsByName('company')[0].value,
-      invoice: document.getElementsByName('invoice')[0].value,
-      amount: adjustedTotal,
-      billingAddress: document.getElementsByName('billingAddress')[0].value,
-      city: document.getElementsByName('city')[0].value,
-      state: document.getElementsByName('state')[0].value,
-      zip: document.getElementsByName('zip')[0].value,
-      paymentMethod: paymentMethod,
-    };
+    const firstName = document.getElementsByName('firstName')[0].value;
+    const lastName = document.getElementsByName('lastName')[0].value;
+    const email = document.getElementsByName('email')[0].value;
+    const billingAddress = document.getElementsByName('billingAddress')[0].value;
+    const city = document.getElementsByName('city')[0].value;
+    const state = document.getElementsByName('state')[0].value;
+    const zip = document.getElementsByName('zip')[0].value;
 
     if (paymentMethod === 'CreditCard') {
-      paymentData.cardNumber = document.getElementsByName('cardNumber')[0].value;
-      paymentData.expirationDate = `${document.getElementsByName('month')[0].value}${document.getElementsByName('year')[0].value}`;
-      paymentData.cardCode = document.getElementsByName('cardCode')[0].value;
+      const cardNumber = document.getElementsByName('cardNumber')[0].value;
+      const month = document.getElementsByName('month')[0].value;
+      const year = document.getElementsByName('year')[0].value;
+      const cardCode = document.getElementsByName('cardCode')[0].value;
 
-      if (!paymentData.cardNumber || !paymentData.expirationDate || !paymentData.cardCode || !paymentData.zip) {
-        setError('All credit card fields are required.');
+      if (!cardNumber || !month || !year || !cardCode || !zip || !firstName || !lastName || !billingAddress || !city || !state) {
+        setError('All credit card fields and billing information are required.');
         return;
+      }
+
+      const expirationDate = `${month}${year}`;
+
+      const cardData = {
+        cardNumber: cardNumber,
+        expirationDate: expirationDate,
+        cardCode: cardCode,
+        zip: zip,
+        billingAddress: billingAddress,
+        city: city,
+        state: state,
+        firstName: firstName,
+        lastName: lastName,
+        amount: adjustedTotal,
+      };
+
+      console.log('Card Data:', cardData); // Debugging log
+
+      try {
+        const response = await dispatchData(cardData);
+        if (response.messages.resultCode === 'Ok') {
+          // Handle successful payment
+          console.log('Payment Successful:', response);
+          await sendEmails(email);
+          router.push('/confirmation');
+        } else {
+          // Handle payment error
+          console.error('Payment Error:', response.messages.message[0].text);
+          setError(response.messages.message[0].text);
+        }
+      } catch (error) {
+        console.error('Error dispatching data:', error);
+        setError('An error occurred while processing the payment. Please try again.');
       }
     } else if (paymentMethod === 'ACH') {
-      paymentData.bankName = document.getElementsByName('bankName')[0].value;
-      paymentData.accountType = document.getElementsByName('accountType')[0].value;
-      paymentData.accountNumber = document.getElementsByName('accountNumber')[0].value;
-      paymentData.routingNumber = document.getElementsByName('routingNumber')[0].value;
+      const bankName = document.getElementsByName('bankName')[0].value;
+      const accountType = document.getElementsByName('accountType')[0].value;
+      const accountNumber = document.getElementsByName('accountNumber')[0].value;
+      const routingNumber = document.getElementsByName('routingNumber')[0].value;
 
-      if (!paymentData.bankName || !paymentData.accountType || !paymentData.accountNumber || !paymentData.routingNumber) {
-        setError('All ACH fields are required.');
+      if (!bankName || !accountType || !accountNumber || !routingNumber || !email) {
+        setError('All ACH fields and email are required.');
         return;
       }
-    }
 
-    try {
-      const response = await fetch('/api/process-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // Handle successful payment
-        console.log('Payment Successful:', result);
-        await sendEmails(paymentData.email);
-        router.push('/confirmation');
-      } else {
-        // Handle payment error
-        console.error('Payment Error:', result.message);
-        setError(result.message);
-      }
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      setError('An error occurred while processing the payment. Please try again.');
+      // Handle ACH payment
+      console.log('Processing ACH payment');
+      await sendEmails(email);
+      router.push('/confirmation');
     }
   };
 
@@ -114,7 +127,7 @@ const PaymentForm = () => {
     };
 
     const adminTemplateParams = {
-      to_email: 'admin@example.com',
+      to_email: 'bdoss@varispark.com',
       subject: 'New Payment Submitted',
       message: `
         A new payment has been submitted.
@@ -148,11 +161,11 @@ const PaymentForm = () => {
           <div style={styles.inputGroup}>
             <label style={styles.label}>
               First Name:
-              <input type="text" name="firstName" required style={styles.input} />
+              <input type="text" id="firstName" name="firstName" required style={styles.input} />
             </label>
             <label style={styles.label}>
               Last Name:
-              <input type="text" name="lastName" required style={styles.input} />
+              <input type="text" id="lastName" name="lastName" required style={styles.input} />
             </label>
           </div>
 
@@ -175,6 +188,7 @@ const PaymentForm = () => {
               Invoice #:
               <input type="text" name="invoice" style={styles.input} />
             </label>
+
             <label style={styles.label}>
               Amount:
               <input type="number" name="amount" required onChange={handleAmountChange} style={styles.input} />
@@ -193,6 +207,7 @@ const PaymentForm = () => {
               City:
               <input type="text" name="city" required style={styles.input} />
             </label>
+
             <label style={styles.label}>
               State:
               <input type="text" name="state" required style={styles.input} />
@@ -202,7 +217,7 @@ const PaymentForm = () => {
           <div style={styles.inputGroup}>
             <label style={styles.label}>
               Zip:
-              <input type="text" name="zip" required style={styles.input} />
+              <input type="text" id="zip" name="zip" required style={styles.input} />
             </label>
           </div>
 
@@ -210,8 +225,9 @@ const PaymentForm = () => {
             <label style={styles.label}>
               Payment Method:
               <select value={paymentMethod} onChange={handlePaymentMethodChange} style={styles.select}>
-                <option value="CreditCard">Credit Card</option>
+                <option value="">Select Payment Method</option>
                 <option value="ACH">ACH</option>
+                <option value="CreditCard">Credit Card</option>
               </select>
             </label>
           </div>
@@ -256,23 +272,23 @@ const PaymentForm = () => {
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Card Number:
-                  <input type="text" name="cardNumber" required style={styles.input} />
+                  <input type="text" id="cardNumber" name="cardNumber" required style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   Expiration Month:
-                  <input type="text" name="month" placeholder="MM" required style={styles.input} />
+                  <input type="text" id="month" name="month" placeholder="MM" required style={styles.input} />
                 </label>
                 <label style={styles.label}>
                   Expiration Year:
-                  <input type="text" name="year" placeholder="YY" required style={styles.input} />
+                  <input type="text" id="year" name="year" placeholder="YY" required style={styles.input} />
                 </label>
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>
                   CVV:
-                  <input type="text" name="cardCode" required style={styles.input} />
+                  <input type="text" id="cardCode" name="cardCode" required style={styles.input} />
                 </label>
               </div>
               <p style={styles.note}>Note: A 3% credit card fee is added to the total.</p>

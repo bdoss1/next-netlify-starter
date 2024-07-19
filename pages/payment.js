@@ -1,4 +1,4 @@
-// pages/index.js
+// pages/payment.js
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
