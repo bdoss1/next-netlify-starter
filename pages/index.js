@@ -51,7 +51,7 @@ const PaymentForm = () => {
       const fullName = document.getElementsByName('fullName')[0].value;
 
 
-      if (!CardNumber || !ExpirationDate || !CardCode) {
+      if (!cardNumber || !month || !year || !cardCode || !zip ) {
         setError('All credit card fields are required.');
         return;
       }
@@ -65,14 +65,16 @@ const PaymentForm = () => {
         fullname, fullname,
       };
 
-      var cardData = {};
+      var cardData2 = {};
         cardData.cardNumber = document.getElementById("cardNumber").value;
-        cardData.month = document.getElementById("expMonth").value;
-        cardData.year = document.getElementById("expYear").value;
+        cardData.month = document.getElementById("month").value;
+        cardData.year = document.getElementById("year").value;
         cardData.cardCode = document.getElementById("cardCode").value;
+        cardData.zip = document.getElementById("zip").value;
+        
 
 
-      console.log('Card Data:', cardData); // Debugging log
+      console.log('Card Data:', cardData2); // Debugging log
 
       try {
         const response = await dispatchData(cardData);
