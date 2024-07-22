@@ -285,6 +285,8 @@ const PaymentForm = () => {
           <button type="submit" style={styles.button}>Submit Payment</button>
         </form>
       </div>
+
+      
     </>
   );
 };
