@@ -1,5 +1,5 @@
 // pages/api/process-payment.js
-import { APIContracts, APIControllers } from 'authorizenet';
+import { APIContracts, APIControllers, Constants } from 'authorizenet';
 import constants from '../../utils/constants'; // Adjust the path if necessary
 
 export default async function handler(req, res) {
@@ -62,6 +62,8 @@ export default async function handler(req, res) {
     createRequest.setTransactionRequest(transactionRequestType);
 
     const ctrl = new APIControllers.CreateTransactionController(createRequest.getJSON());
+
+    ctrl.setEnvironment(Constants.endpoint.production); // Ensure the environment is set to production
 
     ctrl.execute(function () {
       const apiResponse = ctrl.getResponse();
