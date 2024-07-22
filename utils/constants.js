@@ -1,6 +1,6 @@
 // utils/constants.js
 module.exports = {
-    apiLoginKey: '3BDf57kEf2', // Replace with your API login ID
-    transactionKey: '3CFMHU57z752t8y3', // Replace with your transaction key
+    apiLoginKey: '4w94cd8LEb', // Replace with your API login ID
+    transactionKey: '63P397P7JyHqdUr9', // Replace with your transaction key
   };
   
