@@ -143,7 +143,7 @@ const PaymentForm = () => {
       <Script src="https://js.authorize.net/v1/Accept.js" strategy="beforeInteractive" />
       <div style={styles.container}>
         <form onSubmit={handleSubmit} style={styles.form}>
-          <h2 style={styles.heading}>Payment Form</h2>
+          <h2 style={styles.heading}>Varispark Payment Form</h2>
 
           <div style={styles.inputGroup}>
             <label style={styles.label}>
