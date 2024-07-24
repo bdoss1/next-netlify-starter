@@ -82,12 +82,10 @@ const PaymentForm = () => {
       const result = await response.json();
 
       if (response.ok) {
-        // Handle successful payment
         console.log('Payment Successful:', result);
         await sendEmails(paymentData.email);
         router.push('/confirmation');
       } else {
-        // Handle payment error
         console.error('Payment Error:', result.message);
         setError(result.message);
       }
@@ -136,6 +134,7 @@ const PaymentForm = () => {
     } catch (error) {
       console.error('Error sending email:', error);
     }
+    
   };
 
   return (
@@ -143,7 +142,7 @@ const PaymentForm = () => {
       <Script src="https://js.authorize.net/v1/Accept.js" strategy="beforeInteractive" />
       <div style={styles.container}>
         <form onSubmit={handleSubmit} style={styles.form}>
-          <h2 style={styles.heading}>Varispark Payment Form</h2>
+          <h2 style={styles.heading}>Payment Form</h2>
 
           <div style={styles.inputGroup}>
             <label style={styles.label}>
@@ -177,7 +176,14 @@ const PaymentForm = () => {
             </label>
             <label style={styles.label}>
               Amount:
-              <input type="number" name="amount" required onChange={handleAmountChange} style={styles.input} />
+              <input 
+                type="number" 
+                name="amount" 
+                required 
+                onChange={handleAmountChange} 
+                step="0.01" // Allows decimal numbers
+                style={styles.input} 
+              />
             </label>
           </div>
 
@@ -285,8 +291,6 @@ const PaymentForm = () => {
           <button type="submit" style={styles.button}>Submit Payment</button>
         </form>
       </div>
-
-      
     </>
   );
 };

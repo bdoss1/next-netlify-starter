@@ -1,6 +1,6 @@
 // pages/api/process-payment.js
-import { APIContracts, APIControllers } from 'authorizenet';
-import constants from '../../utils/constants'; // Adjust the path if necessary
+import { APIContracts, APIControllers, Constants } from 'authorizenet';
+import constants from '../../utils/constants';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     const transactionRequestType = new APIContracts.TransactionRequestType();
     transactionRequestType.setTransactionType(APIContracts.TransactionTypeEnum.AUTHCAPTURETRANSACTION);
     transactionRequestType.setPayment(paymentType);
-    transactionRequestType.setAmount(amount);
+    transactionRequestType.setAmount(parseFloat(amount).toFixed(2)); // Ensure the amount is a decimal
     transactionRequestType.setOrder(orderDetails);
     transactionRequestType.setBillTo(billTo);
 
@@ -62,6 +62,8 @@ export default async function handler(req, res) {
     createRequest.setTransactionRequest(transactionRequestType);
 
     const ctrl = new APIControllers.CreateTransactionController(createRequest.getJSON());
+
+    ctrl.setEnvironment(Constants.endpoint.production); // Ensure the environment is set to production
 
     ctrl.execute(function () {
       const apiResponse = ctrl.getResponse();
